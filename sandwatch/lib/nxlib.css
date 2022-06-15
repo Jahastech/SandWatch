@@ -1,0 +1,155 @@
+/* ######################################################################################### */
+body {
+	padding-top: 95px;
+}
+
+/* ######################################################################################### */
+a.xlink:link{color: #000000; text-decoration: none;}
+a.xlink:active{color: #000000; text-decoration: none;}
+a.xlink:visited{color: #000000; text-decoration: none;}
+a.xlink:hover{
+	color: #000000;
+	background-color: #D4D5D2;
+	padding: 2px;
+	text-decoration: none;
+}
+
+/* ######################################################################################### */
+a.mlink:link{color: #87E3F0; text-decoration: none;}
+a.mlink:active{color: #87E3F0; text-decoration: none;}
+a.mlink:visited{color: #87E3F0; text-decoration: none;}
+a.mlink:hover{color: #87E3F0; text-decoration: none;}
+
+/* ######################################################################################### */
+/* policy view */
+span.category-item{
+	display: inline-block;
+	width: 250px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+/* category view */
+span.domain-item{
+	display: inline-block;
+	width: 250px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+span.logging-domain{
+	background-color: #FF7518;
+	color: #FFFFFF;
+	padding: 1px;
+}
+
+span.logging-reason{
+	background-color: #D73811;
+	color: #FFFFFF;
+	font-size: 9px;
+	padding: 1px;
+	margin-left: 3px;
+}
+
+span.logging-category{
+	background-color: #D73811;
+	color: #FFFFFF;
+	padding: 1px;
+}
+
+/* ######################################################################################### */
+.ab-notify{
+	padding: 20px;
+	background-color: #325D88;
+	color: #FFFFFF;
+	opacity: 1;
+	transition: opacity 0.6s;
+	margin-top: 5px;
+	margin-bottom: 0px;
+	margin-left:10px; margin-right:10px;
+}
+
+.ab-notify.primary {background-color: #325D88;}
+.ab-notify.success {background-color: #93C54B;}
+.ab-notify.info {background-color: #29ABE0;}
+.ab-notify.warning {background-color: #F47C3C;}
+.ab-notify.alert {background-color: #D9534F;}
+
+.ab-notify > a:hover{
+	color: #FFFFFF;
+	background-color: #377D9F;
+	padding: 2px;
+	text-decoration: none;
+}
+
+.ab-closebtn{
+	margin-left: 15px;
+	color: white;
+	font-weight: bold;
+	float: right;
+	font-size: 22px;
+	line-height: 20px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.ab-closebtn:hover{
+	color: black;
+}
+
+/* ######################################################################################### */
+div.tab{
+	margin-left: 20px;
+}
+
+/* ######################################################################################### */
+.dataTables_filter input{
+	border: #707070 1px solid;
+}
+
+th{font-size: 14px;}
+td{font-size: 14px;}
+
+i.pointer-cursor{cursor: pointer;}
+
+input[type=button].list{
+	font-family: arial;
+	background: #DDDDDD;
+	font-size: 8pt;
+	color: #000000;
+	border: #707070 1px solid;
+}
+
+input[type=button].list:hover{
+	background: #D0D0D0;
+	font-size: 8pt;
+}
+
+/* ######################################################################################### */
+/*
+.ellipsis{
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	word-wrap: normal !important;
+	display: block;
+	margin-top: 4px;
+}
+*/
+
+.spinner:before{
+	content: "";
+	box-sizing: border-box;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 20px;
+	height: 20px;
+	margin-top: -10px;
+	margin-left: -10px;
+	border-radius: 50%;
+	border: 2px solid #ccc;
+	border-top-color: #333;
+	animation: spinner .6s linear infinite;
+}

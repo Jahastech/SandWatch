@@ -131,7 +131,7 @@ else if(tabIdx == 2){
 				<a class="nav-link<%= tabActive1%>" data-toggle="tab" href="#tab1"><%= translate("LOCAL DNS")%></a>
 			</li>
 			<li class="nav-item" onclick="javascript:$('#tabIdx').val(2);">
-				<a class="nav-link<%= tabActive2%>" data-toggle="tab" href="#tab2"><%= translate("DNS OVER HTTPS")%></a>
+				<a class="nav-link<%= tabActive2%>" data-toggle="tab" href="#tab2"><%= translate("DNS OVER HTTPS (UPSTREAM)")%></a>
 			</li>
 		</ul>
 	</div>
@@ -311,6 +311,11 @@ String size3 = dfmt.format(data.negativeCacheSize);
 				<div class="card bg-light m-2 expand-lg">
 					<div class="card-body">
 						<fieldset>
+
+							<div class="form-group col-lg-8 text-secondary">
+								<%= translate("This is for when you use DNS over HTTPS supporting server as your upstream server.")%>
+							</div>
+
 							<div class="form-group col-lg-8">
 								<label class="col-form-label"><%= translate("HTTPS DNS Server")%></label>
 								<select class="form-control" id="httpsDnsType" name="httpsDnsType">

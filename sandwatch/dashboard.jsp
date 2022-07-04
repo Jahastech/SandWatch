@@ -25,12 +25,18 @@ requestDao.stime = strftimeAdd("yyyyMMddHHmm", 60 * 60 * -12);  // 12 hours ago.
 requestDao.etime = strftime("yyyyMMddHHmm");
 requestDao.blockFlag = true;
 
-if(isNewLogin() && isFreeJahaslist()){
-	warnList.add(translate("We're using free Jahaslist license for 25 users."));
-}
+if(isNewLogin()){
+	if(isFreeJahaslist()){
+		warnList.add(translate("We're using free Jahaslist license for 25 users."));
+	}
 
-if(isNewLogin() && new JahaslistDao().selectCount() < 3000000){
-	errList.add(translate("Jahaslist size is too small. You may have an incomplete update."));
+	if(new JahaslistDao().selectCount() < 3000000){
+		errList.add(translate("Jahaslist size is too small. You may have an incomplete update."));
+	}
+
+	if(LicenseDao.hasExpiredLicenseFile()){
+		errList.add(translate("Your license has been expired."));
+	}
 }
 
 // Message check.

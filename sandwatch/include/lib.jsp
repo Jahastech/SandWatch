@@ -605,7 +605,7 @@ String translate(String line, int maxLineLen){
 
 //-----------------------------------------------
 String translate(String line){
-	return translate(line, 80);
+	return translate(line, 120);
 }
 
 //-----------------------------------------------

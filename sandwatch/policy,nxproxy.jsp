@@ -46,6 +46,10 @@ if(actionFlag.equals("newAutoSwitchDomain")){
 
 // Global.
 PolicyNxProxyData data = dao.selectOne();
+
+if(isGloblist()){
+	warnList.add(translate("Globlist doesn't support NxProxy."));
+}
 %>
 <!-- Action info -->
 <%@include file="include/ab-notify.jsp"%>

@@ -346,6 +346,10 @@ function setDomain(domain){
 
 //-----------------------------------------------
 function recatDomain(form){
+	if(form.id.value == "" || form.id.value == 0){
+		return;
+	}
+
 	$.ajax({
 		type: "POST",
 		url: form.action,

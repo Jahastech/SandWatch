@@ -1,18 +1,16 @@
 <%@include file="include/header.jsp"%>
 <%!
 //-----------------------------------------------
-void update(BlockPageDao dao){
+void update(MobileConfigDao dao){
 	if(demoFlag){
 		errList.add("Not allowed on demo site.");
 		return;
 	}
 
-	BlockPageData data = new BlockPageData();
+	MobileConfigData data = new MobileConfigData();
 
 	// We use requestString here to preserve all the special characters.
-	data.blockPage = requestString("blockPage");
-	data.loginPage = requestString("loginPage");
-	data.welcomePage = requestString("welcomePage");
+	data.template = requestString("template");
 
 	if(dao.update(data)){
 		succList.add(translate("Update finished."));
@@ -30,7 +28,7 @@ if(!checkPermission()){
 }
 
 // Create data access object.
-BlockPageDao dao = new BlockPageDao();
+MobileConfigDao dao = new MobileConfigDao();
 
 // Action.
 String actionFlag = paramString("actionFlag");
@@ -44,7 +42,7 @@ if(actionFlag.equals("restore")){
 }
 
 // Global.
-BlockPageData data = dao.selectOne();
+MobileConfigData data = dao.selectOne();
 %>
 <!-- Action info -->
 <%@include file="include/ab-notify.jsp"%>
@@ -54,7 +52,7 @@ BlockPageData data = dao.selectOne();
 <div class="container-fluid primary" style="margin-top:-5px;">
 	<ol class="breadcrumb" style="margin-left:10px; margin-right:10px;">
 		<li class="breadcrumb-item"><%= translate("SYSTEM")%></li>
-		<li class="breadcrumb-item text-info"><%= translate("BLOCK PAGE")%></li>
+		<li class="breadcrumb-item text-info"><%= translate("MOBILE CONFIG")%></li>
 	</ol>
 </div>
 <!-- /Breadcrumb -->
@@ -69,31 +67,21 @@ BlockPageData data = dao.selectOne();
 				<fieldset>
 
 					<div class="form-group col-lg-8 text-secondary">
-						<%= translate("You can edit your block page, login page, welcome page here. When you edit these pages do not modify the template variables between '\\#{' and '}'.", 1000)%>
-							<br>&nbsp;&nbsp;ex) \#{domain}, \#{reason}
+						<%= translate("You can create a template for iOS, macOS mobile config file. You should not modify the template variables between '\\#{' and '}'.", 1000)%>
 					</div>
 
 					<div class="form-group col-lg-8">
-						<label class="col-form-label"><%= translate("Block Page")%></label>
-						<textarea class="form-control" id="blockPage" name="blockPage" rows="8"><%= escapeHtml(data.blockPage)%></textarea>
-					</div>
-
-					<div class="form-group col-lg-8">
-						<label class="col-form-label"><%= translate("Login Page")%></label>
-						<textarea class="form-control" id="loginPage" name="loginPage" rows="8"><%= escapeHtml(data.loginPage)%></textarea>
-					</div>
-
-					<div class="form-group col-lg-8">
-						<label class="col-form-label"><%= translate("Welcome Page")%></label>
-						<textarea class="form-control" id="welcomePage" name="welcomePage" rows="8"><%= escapeHtml(data.welcomePage)%></textarea>
+						<label class="col-form-label">
+							<%= translate("Mobile Config File Template")%>
+							&nbsp;<i class="fa fa-question-circle south-east"
+								title="<%= translate("You need to set your own domain in the template. You can download a user specific mobile config file based on this template from user edit page.")%>"></i>
+						</label>
+						<textarea class="form-control" id="template" name="template" rows="22"><%= escapeHtml(data.template)%></textarea>
 					</div>
 
 					<div class="form-group col-lg-8">
 						<button type="submit" class="btn btn-primary"><%= translate("SUBMIT")%></button>
 						<button type="button" class="btn btn-warning" onclick="javascript:restoreDefault(this.form);"><%= translate("RESTORE DEFAULT")%></button>
-						<button type="button" class="btn btn-info" onclick="javascript:preview(this.form.blockPage.value);"><%= translate("VIEW BLOCK PAGE")%></button>
-						<button type="button" class="btn btn-info" onclick="javascript:preview(this.form.loginPage.value);"><%= translate("VIEW LOGIN PAGE")%></button>
-						<button type="button" class="btn btn-info" onclick="javascript:preview(this.form.welcomePage.value);"><%= translate("VIEW WELCOME PAGE")%></button>
 					</div>
 
 				</fieldset>
@@ -107,14 +95,6 @@ BlockPageData data = dao.selectOne();
 <%@include file="include/footer.jsp"%>
 
 <script>
-//-----------------------------------------------
-function preview(text){
-	var w = window.open("", "previewWindow", "width=1024,height=600");
-	w.document.open();
-	w.document.write(text);
-	w.document.close();
-}
-
 //-----------------------------------------------
 function restoreDefault(form){
 	if(!confirm('<%= translate("Restore default?")%>')){

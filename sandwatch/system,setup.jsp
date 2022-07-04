@@ -298,7 +298,7 @@ else if(tabIdx == 3){
 					<div class="card-body">
 						<fieldset>
 							<div class="form-group col-lg-8 text-secondary">
-								<%= translate("Exporting NxFilter log to a Syslog server.", 1000)%>
+								<%= translate("Exporting DNS request log to a Syslog server.", 1000)%>
 							</div>
 							<div class="form-group col-lg-8">
 								<label class="col-form-label"><%= translate("Syslog Host")%></label>

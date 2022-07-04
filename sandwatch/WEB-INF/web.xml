@@ -68,6 +68,7 @@
 		<url-pattern>/hxlistener</url-pattern>
 	</servlet-mapping>
 
+	<!-- NxProxy -->
 	<servlet>
 		<servlet-name>DnsListener</servlet-name>
 		<servlet-class>nxd.www.DnsListener</servlet-class>
@@ -76,6 +77,17 @@
 	<servlet-mapping>
 		<servlet-name>DnsListener</servlet-name>
 		<url-pattern>/resolve</url-pattern>
+	</servlet-mapping>
+
+	<!-- DoH -->
+	<servlet>
+		<servlet-name>DohListener</servlet-name>
+		<servlet-class>nxd.www.DohListener</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>DohListener</servlet-name>
+		<url-pattern>/dns-query/*</url-pattern>
 	</servlet-mapping>
 
 	<welcome-file-list>

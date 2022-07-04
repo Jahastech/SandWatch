@@ -117,6 +117,18 @@ if(actionFlag.equals("addIp")){
 if(actionFlag.equals("deleteIp")){
 	deleteIp(dao);
 }
+if(actionFlag.equals("mobileConfig")){
+	String filename = dao.writeMobileConfigFile(paramInt("id"));
+
+	// Don't make it too big.
+	if(isNotEmpty(filename)){
+		response.sendRedirect("download.jsp?filename=" + filename + "&contentType=application/xml");
+		return;
+	}
+	else{
+		errList.add(translate("Couldn't write the file."));
+	}
+}
 
 // Global.
 UserData data = dao.selectOne(paramInt("id"));
@@ -273,6 +285,7 @@ else{
 							<div class="form-group col-lg-8">
 								<button type="button" class="btn btn-primary" onclick="javascript:actionUpdate(this.form);"><%= translate("SUBMIT")%></button>
 								<button type="button" class="btn btn-info" onclick="javascript:actionNewToken(this.form)"><%= translate("NEW LOGIN TOKEN")%></button>
+								<button type="button" class="btn btn-warning" onclick="javascript:actionMobileConfig(this.form)"><%= translate("DOWNLOAD MOBILE CONFIG FILE")%></button>
 							</div>
 						</fieldset>
 					</div>
@@ -410,6 +423,12 @@ function actionDeleteIp(ipId){
 	form = document.forms[0];
 	form.actionFlag.value = "deleteIp";
 	form.ipId.value = ipId;
+	form.submit();
+}
+
+//-----------------------------------------------
+function actionMobileConfig(form){
+	form.actionFlag.value = "mobileConfig";
 	form.submit();
 }
 </script>

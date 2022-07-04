@@ -14,13 +14,13 @@ response.setHeader("Cache-Control","no-cache");
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<link rel="stylesheet" href="/lib/bootstrap.css" media="screen">
-<link rel="stylesheet" href="/lib/custom.css">
-<link rel="stylesheet" href="/lib/fa6/css/all.min.css">
-<link rel="stylesheet" href="/lib/dataTables.1.10.20.css">
-<link rel="stylesheet" href="/lib/jquery.powertip.min.css">
-<link rel="stylesheet" href="/lib/xdpick/jquery.datetimepicker.css"/>
-<link rel="stylesheet" href="/lib/nxlib.css">
+<link rel="stylesheet" href="lib/bootstrap.css" media="screen">
+<link rel="stylesheet" href="lib/custom.css">
+<link rel="stylesheet" href="lib/fa6/css/all.min.css">
+<link rel="stylesheet" href="lib/dataTables.1.10.20.css">
+<link rel="stylesheet" href="lib/jquery.powertip.min.css">
+<link rel="stylesheet" href="lib/xdpick/jquery.datetimepicker.css"/>
+<link rel="stylesheet" href="lib/nxlib.css">
 <title><%= getNxName()%> v<%= getNxVersion()%></title>
 </head>
 
@@ -47,6 +47,7 @@ response.setHeader("Cache-Control","no-cache");
 							<a class="dropdown-item" href="system,allowed_ip.jsp"><%= translate("GUI ACCESS CONTROL")%></a>
 							<a class="dropdown-item" href="system,backup.jsp"><%= translate("BACKUP")%></a>
 							<a class="dropdown-item" href="system,block_page.jsp"><%= translate("BLOCK PAGE")%></a>
+							<a class="dropdown-item" href="system,mobile_config.jsp"><%= translate("MOBILE CONFIG")%></a>
 							<a class="dropdown-item" href="system,cluster.jsp"><%= translate("CLUSTERING")%></a>
 						</div>
 					</li>

@@ -17,6 +17,7 @@ boolean checkParam(AlertData data){
 
 //-----------------------------------------------
 void update(AlertDao dao){
+	AlertData oldData = dao.selectOne();
 	AlertData data = new AlertData();
 
 	data.adminEmail = paramString("adminEmail");
@@ -30,30 +31,35 @@ void update(AlertDao dao){
 
 	data.alertCategoryArr = paramArray("alertCategoryArr");
 
+	// Alert events.
+	data.recvAlertAdminBlock = paramBoolean("recvAlertAdminBlock");
+	data.recvAlertCategoryBlock = paramBoolean("recvAlertCategoryBlock");
+	data.recvAlertUnclassified = paramBoolean("recvAlertUnclassified");
+	data.recvAlertCnameCloaking = paramBoolean("recvAlertCnameCloaking");
+	data.recvAlertScreenTime = paramBoolean("recvAlertScreenTime");
+	data.recvAlertDataCap = paramBoolean("recvAlertDataCap");
+	data.recvAlertBlockTime = paramBoolean("recvAlertBlockTime");
+	data.recvAlertSystemBlock = paramBoolean("recvAlertSystemBlock");
+	data.recvAlertOtherReasons = paramBoolean("recvAlertOtherReasons");
+
 	// Validate and update it.
 	if(checkParam(data) && dao.update(data)){
 		succList.add(translate("Update finished."));
+
+		if(!oldData.adminEmail.equals(data.adminEmail)
+			|| !oldData.smtpHost.equals(data.smtpHost)
+			|| oldData.smtpEncType != data.smtpEncType
+			|| oldData.smtpPort != data.smtpPort
+			|| !oldData.smtpUser.equals(data.smtpUser)
+			|| !oldData.smtpPasswd.equals(data.smtpPasswd)
+		){
+			warnList.add(translate("Restart is required to apply new settings."));
+		}
 	}
 }
 
 //-----------------------------------------------
 void test(AlertDao dao){
-	AlertData data = new AlertData();
-
-	data.adminEmail = paramString("adminEmail");
-	data.adminCc = paramString("adminCc");
-	data.smtpHost = paramString("smtpHost");
-	data.smtpPort = paramInt("smtpPort");
-	data.smtpEncType = paramInt("smtpEncType");
-	data.smtpUser = paramString("smtpUser");
-	data.smtpPasswd = paramString("smtpPasswd");
-	data.period = paramInt("period");
-
-	// Validate and update it.
-	if(!checkParam(data) || !dao.update(data)){
-		return;
-	}
-
 	try{
 		dao.test();
 		succList.add(translate("Test email has been sent."));
@@ -67,6 +73,7 @@ void test(AlertDao dao){
 //-----------------------------------------------
 // Set permission for this page.
 permission.addAdmin();
+permission.addSubAdmin();
 
 //Check permission.
 if(!checkPermission()){
@@ -91,9 +98,11 @@ AlertData data = dao.selectOne();
 // Active tab.
 String tabActive0 = "";
 String tabActive1 = "";
+String tabActive2 = "";
 
 String showActive0 = "";
 String showActive1 = "";
+String showActive2 = "";
 
 int tabIdx = paramInt("tabIdx");
 if(tabIdx == 0){
@@ -103,6 +112,10 @@ if(tabIdx == 0){
 else if(tabIdx == 1){
 	tabActive1 = " active";
 	showActive1 = " show active";
+}
+else if(tabIdx == 2){
+	tabActive2 = " active";
+	showActive2 = " show active";
 }
 %>
 <!-- Action info -->
@@ -128,7 +141,10 @@ else if(tabIdx == 1){
 				<a class="nav-link<%= tabActive0%>" data-toggle="tab" href="#tab0"><%= translate("EMAIL SETUP")%></a>
 			</li>
 			<li class="nav-item" onclick="javascript:$('#tabIdx').val(1);">
-				<a class="nav-link<%= tabActive1%>" data-toggle="tab" href="#tab1"><%= translate("ALERT CATEGORIES")%></a>
+				<a class="nav-link<%= tabActive1%>" data-toggle="tab" href="#tab1"><%= translate("ALERT EVENTS")%></a>
+			</li>
+			<li class="nav-item" onclick="javascript:$('#tabIdx').val(2);">
+				<a class="nav-link<%= tabActive2%>" data-toggle="tab" href="#tab2"><%= translate("ALERT CATEGORIES")%></a>
 			</li>
 		</ul>
 	</div>
@@ -220,8 +236,85 @@ for(Map.Entry<Integer, String> entry : periodMap.entrySet()){
 			</div>
 			<!-- /Alert -->
 
+			<!-- Alert Events -->
+			<div class="tab-pane <%= showActive1%>" id="tab1">
+				<div class="card bg-light m-2 expand-lg">
+					<div class="card-body">
+						<fieldset>
+							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="recvAlertAdminBlock"
+										name="recvAlertAdminBlock" <%if(data.recvAlertAdminBlock){out.print("checked");}%>>
+									<label class="custom-control-label" for="recvAlertAdminBlock"><%= translate("Receive alert emails for the block events by 'Admin Block'")%></label>
+								</div>
+							</div>
+							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="recvAlertCategoryBlock"
+										name="recvAlertCategoryBlock" <%if(data.recvAlertCategoryBlock){out.print("checked");}%>>
+									<label class="custom-control-label" for="recvAlertCategoryBlock"><%= translate("Receive alert emails for the block events by 'Category'")%></label>
+								</div>
+							</div>
+							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="recvAlertUnclassified"
+										name="recvAlertUnclassified" <%if(data.recvAlertUnclassified){out.print("checked");}%>>
+									<label class="custom-control-label" for="recvAlertUnclassified"><%= translate("Receive alert emails for the block events by 'Unclassified'")%></label>
+								</div>
+							</div>
+							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="recvAlertCnameCloaking"
+										name="recvAlertCnameCloaking" <%if(data.recvAlertCnameCloaking){out.print("checked");}%>>
+									<label class="custom-control-label" for="recvAlertCnameCloaking"><%= translate("Receive alert emails for the block events by 'CName Cloaking'")%></label>
+								</div>
+							</div>
+							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="recvAlertScreenTime"
+										name="recvAlertScreenTime" <%if(data.recvAlertScreenTime){out.print("checked");}%>>
+									<label class="custom-control-label" for="recvAlertScreenTime"><%= translate("Receive alert emails for the block events by 'Screen Time'")%></label>
+								</div>
+							</div>
+							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="recvAlertDataCap"
+										name="recvAlertDataCap" <%if(data.recvAlertDataCap){out.print("checked");}%>>
+									<label class="custom-control-label" for="recvAlertDataCap"><%= translate("Receive alert emails for the block events by 'Data Cap'")%></label>
+								</div>
+							</div>
+							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="recvAlertBlockTime"
+										name="recvAlertBlockTime" <%if(data.recvAlertBlockTime){out.print("checked");}%>>
+									<label class="custom-control-label" for="recvAlertBlockTime"><%= translate("Receive alert emails for the block events by 'Block Time'")%></label>
+								</div>
+							</div>
+							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="recvAlertSystemBlock"
+										name="recvAlertSystemBlock" <%if(data.recvAlertSystemBlock){out.print("checked");}%>>
+									<label class="custom-control-label" for="recvAlertSystemBlock"><%= translate("Receive alert emails for the block events by 'System Block'")%></label>
+								</div>
+							</div>
+							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="recvAlertOtherReasons"
+										name="recvAlertOtherReasons" <%if(data.recvAlertOtherReasons){out.print("checked");}%>>
+									<label class="custom-control-label" for="recvAlertOtherReasons"><%= translate("Receive alert emails for the block events by other reasons")%></label>
+								</div>
+							</div>
+							<div class="form-group col-lg-8">
+								<button type="submit" class="btn btn-primary"><%= translate("SUBMIT")%></button>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+			</div>
+			<!-- /Alert Events -->
+
 			<!-- Alert Categories -->
-			<div class="tab-pane fade<%= showActive1%>" id="tab1">
+			<div class="tab-pane fade<%= showActive2%>" id="tab2">
 				<div class="card bg-light m-2 expand-lg">
 					<div class="card-body">
 
@@ -307,6 +400,10 @@ $("#smtpPort").inputFilter(function(value){
 
 	return /^\d*$/.test(value);
 });
+
+if($("#smtpPort").val() == "" || $("#smtpPort").val() == 0){
+	$("#smtpPort").val(25);
+}
 
 //-----------------------------------------------
 function actionTest(form){

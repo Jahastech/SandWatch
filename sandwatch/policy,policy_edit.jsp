@@ -453,21 +453,14 @@ $("#points").inputFilter(function(value){
 		return true;
 	}
 
-	return /^[\d]*$/.test(value) && value < 1000;
-});
-$("#maxDomainLen").inputFilter(function(value){
-	if(value == ""){
-		return true;
-	}
-
-	return /^[\d]*$/.test(value) && value < 1000;
+	return /^[\d]*$/.test(value) && value <= 1000;
 });
 $("#quota").inputFilter(function(value){
 	if(value == ""){
 		return true;
 	}
 
-	return /^[\d]*$/.test(value) && value < 1440;
+	return /^[\d]*$/.test(value) && value <= 1440;
 });
 $("#bwdtLimit").inputFilter(function(value){
 	if(value == ""){

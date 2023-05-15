@@ -19,7 +19,8 @@ void update(ClusterDao dao){
 	}
 
 	if(dao.update(data)){
-		succList.add(translate("Restart is required to apply new settings."));
+		succList.add(translate("Update finished."));
+		warnList.add(translate("Restart is required to apply new settings."));
 	}
 }
 
@@ -34,6 +35,7 @@ void delete(ClusterDao dao){
 //-----------------------------------------------
 // Set permission for this page.
 permission.addAdmin();
+permission.addSubAdmin();
 
 //Check permission.
 if(!checkPermission()){

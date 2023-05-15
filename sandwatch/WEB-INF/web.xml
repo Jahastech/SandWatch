@@ -59,6 +59,36 @@
 	</servlet-mapping>
 
 	<servlet>
+		<servlet-name>welcome_jsp</servlet-name>
+		<jsp-file>/block,welcome.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>welcome_jsp</servlet-name>
+		<url-pattern>/welcome</url-pattern>
+		<url-pattern>/welcome/</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>password_jsp</servlet-name>
+		<jsp-file>/block,password.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>password_jsp</servlet-name>
+		<url-pattern>/password</url-pattern>
+		<url-pattern>/password/</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>logout_jsp</servlet-name>
+		<jsp-file>/block,logout.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>logout_jsp</servlet-name>
+		<url-pattern>/logout</url-pattern>
+		<url-pattern>/logout/</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>HxListener</servlet-name>
 		<servlet-class>nxd.www.HxListener</servlet-class>
 	</servlet>

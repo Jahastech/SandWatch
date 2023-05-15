@@ -43,7 +43,9 @@ if(isNewLogin()){
 checkNewMessage();
 
 // Version check.
-checkNewVersion();
+if(!new ConfigDao().selectOne().disableVersionCheck){
+	checkNewVersion();
+}
 
 // Active tab.
 String tabActive0 = "";

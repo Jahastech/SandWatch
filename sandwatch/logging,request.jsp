@@ -149,7 +149,7 @@ for(int i = 0; i < dataList.size(); i++){
 									onclick="javascript:setDomain('<%= data.domain%>')">
 									<%= data.domain%> <%= domainReason%>
 								</td>
-								<td><%= data.user%></td>
+								<td><%= safeSubStringWithPostfix(data.user, 32, "..")%></td>
 								<td><%= data.cltIp%></td>
 								<td><%= data.grp%></td>
 								<td><%= data.policy%></td>

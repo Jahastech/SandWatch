@@ -24,6 +24,7 @@ void update(SubAdminDao dao){
 	data.permReport = paramBoolean("permReport");
 
 	data.permDashboard = paramBoolean("permDashboard");
+	data.permSystem = paramBoolean("permSystem");
 
 	if(dao.update(data)){
 		succList.add(translate("Update finished."));
@@ -86,6 +87,14 @@ SubAdminData data = dao.selectOne(paramInt("id"));
 				<div class="form-group col-lg-8">
 					<label class="col-form-label"><%= translate("Password")%></label>
 					<input type="password" class="form-control" id="passwd" name="passwd" value="<%= data.passwd%>">
+				</div>
+
+				<div class="form-group col-lg-8">
+					<div class="custom-control custom-checkbox">
+						<input type="checkbox" class="custom-control-input" id="permSystem" name="permSystem"
+							<%if(data.permSystem){out.print("checked");}%>>
+						<label for="permSystem" class="custom-control-label"><%= translate("GUI Access to SYSTEM")%></label>
+					</div>
 				</div>
 
 				<div class="form-group col-lg-8">

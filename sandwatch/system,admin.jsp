@@ -11,8 +11,8 @@ void updateName(AdminDao dao){
 	data.name = paramString("adminName");
 
 	// Param validation.
-	if(data.name.length() < 4 || !ParamTest.isValidNameLen(data.name)){
-		errList.add("Name length must be between 4 and 64.");
+	if(data.name.length() < 1 || !ParamTest.isValidNameLen(data.name)){
+		errList.add("Name length must be between 1 and 64.");
 		return;
 	}
 	

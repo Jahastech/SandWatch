@@ -21,6 +21,7 @@ void update(MobileConfigDao dao){
 //-----------------------------------------------
 // Set permission for this page.
 permission.addAdmin();
+permission.addSubAdmin();
 
 //Check permission.
 if(!checkPermission()){

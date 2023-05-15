@@ -2,7 +2,7 @@
 <%!
 //-----------------------------------------------
 void insert(AdapDao dao){
-	LdapData data = new LdapData();
+	AdapData data = new AdapData();
 	data.host = paramString("host");
 	data.admin = paramString("admin");
 	data.passwd = paramString("passwd");
@@ -51,13 +51,12 @@ void test(AdapDao dao){
 
 //-----------------------------------------------
 void importLdap(AdapDao dao){
-	String res = dao.importLdap(paramInt("id"));
-	if(res == null){
-		errList.add(translate("LDAP import failed."));
-	}
-	else{
-		succList.add(translate("LDAP import finished."));
+	try{
+		String res = dao.importLdap(paramInt("id"));
 		succList.add(res);
+	}
+	catch(Exception e){
+		errList.add(e.toString());
 	}
 }
 %>
@@ -180,7 +179,7 @@ else if(tabIdx == 1){
 <%
 List<LdapData> dataList = dao.selectList();
 for(int i = 0; i < dataList.size(); i++){
-	LdapData data = dataList.get(i);
+	AdapData data = (AdapData)dataList.get(i);
 %>
 							<tr>
 								<td><%= data.host%></td>
@@ -235,7 +234,11 @@ for(int i = 0; i < dataList.size(); i++){
 								<small id="input-help" class="form-text text-muted">ex) cn=users,dc=nxfilter,dc=local</small>
 							</div>
 							<div class="form-group col-lg-8">
-								<label class="col-form-label"><%= translate("Domain")%></label>
+								<label class="col-form-label">
+									<%= translate("Domain")%>
+									&nbsp;<i class="fa fa-question-circle south-east"
+										title="<%= translate("The domain you want to bypass to Active Directory MS DNS server.")%>"></i>
+								</label>
 								<input type="text" class="form-control" id="domain" name="domain" value="<%= g_domain%>">
 								<small id="input-help" class="form-text text-muted">ex) nxfilter.local</small>
 							</div>

@@ -13,6 +13,7 @@ void update(BlockPageDao dao){
 	data.blockPage = requestString("blockPage");
 	data.loginPage = requestString("loginPage");
 	data.welcomePage = requestString("welcomePage");
+	data.passwordPage = requestString("passwordPage");
 
 	if(dao.update(data)){
 		succList.add(translate("Update finished."));
@@ -23,6 +24,7 @@ void update(BlockPageDao dao){
 //-----------------------------------------------
 // Set permission for this page.
 permission.addAdmin();
+permission.addSubAdmin();
 
 //Check permission.
 if(!checkPermission()){
@@ -75,17 +77,36 @@ BlockPageData data = dao.selectOne();
 
 					<div class="form-group col-lg-8">
 						<label class="col-form-label"><%= translate("Block Page")%></label>
-						<textarea class="form-control" id="blockPage" name="blockPage" rows="8"><%= escapeHtml(data.blockPage)%></textarea>
+						<textarea class="form-control" id="blockPage" name="blockPage" rows="6"><%= escapeHtml(data.blockPage)%></textarea>
 					</div>
 
 					<div class="form-group col-lg-8">
-						<label class="col-form-label"><%= translate("Login Page")%></label>
-						<textarea class="form-control" id="loginPage" name="loginPage" rows="8"><%= escapeHtml(data.loginPage)%></textarea>
+						<label class="col-form-label">
+							<%= translate("Login Page")%>
+							<small id="input-help" class="form-text text-muted">
+								http://<%= request.getLocalAddr()%>/block,login.jsp
+							</small>
+						</label>
+						<textarea class="form-control" id="loginPage" name="loginPage" rows="6"><%= escapeHtml(data.loginPage)%></textarea>
 					</div>
 
 					<div class="form-group col-lg-8">
-						<label class="col-form-label"><%= translate("Welcome Page")%></label>
-						<textarea class="form-control" id="welcomePage" name="welcomePage" rows="8"><%= escapeHtml(data.welcomePage)%></textarea>
+						<label class="col-form-label">
+							<%= translate("Password Page")%>
+							<small id="input-help" class="form-text text-muted">
+								http://<%= request.getLocalAddr()%>/block,password.jsp
+							</small>
+						</label>
+						<textarea class="form-control" id="passwordPage" name="passwordPage" rows="6"><%= escapeHtml(data.passwordPage)%></textarea>
+					</div>
+
+					<div class="form-group col-lg-8">
+						<label class="col-form-label"><%= translate("Welcome Page")%>
+							<small id="input-help" class="form-text text-muted">
+								http://<%= request.getLocalAddr()%>/block,welcome.jsp
+							</small>
+						</label>
+						<textarea class="form-control" id="welcomePage" name="welcomePage" rows="6"><%= escapeHtml(data.welcomePage)%></textarea>
 					</div>
 
 					<div class="form-group col-lg-8">
@@ -93,6 +114,7 @@ BlockPageData data = dao.selectOne();
 						<button type="button" class="btn btn-warning" onclick="javascript:restoreDefault(this.form);"><%= translate("RESTORE DEFAULT")%></button>
 						<button type="button" class="btn btn-info" onclick="javascript:preview(this.form.blockPage.value);"><%= translate("VIEW BLOCK PAGE")%></button>
 						<button type="button" class="btn btn-info" onclick="javascript:preview(this.form.loginPage.value);"><%= translate("VIEW LOGIN PAGE")%></button>
+						<button type="button" class="btn btn-info" onclick="javascript:preview(this.form.passwordPage.value);"><%= translate("VIEW PASSWORD PAGE")%></button>
 						<button type="button" class="btn btn-info" onclick="javascript:preview(this.form.welcomePage.value);"><%= translate("VIEW WELCOME PAGE")%></button>
 					</div>
 

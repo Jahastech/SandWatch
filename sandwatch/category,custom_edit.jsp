@@ -126,7 +126,9 @@ CategoryData data = dao.selectOne(paramInt("id"));
 					<label class="col-form-label">
 						<%= translate("Domain")%>
 						&nbsp;<i class="fa fa-question-circle south-east"
-							title="<%= translate("You can add multiple domains separated by spaces.")%>"></i>
+							title="<%= translate("You can add multiple domains separated by spaces.")%>
+							<br><%= translate("To include subdomains use asterisk.")%>
+							<br>&nbsp;&nbsp;ex) *.nxfilter.org"></i>
 					</label>
 					<textarea class="form-control" id="domain" name="domain"></textarea>
 					<button type="button" class="btn btn-primary btn-sm" style="margin-top: 3px;"

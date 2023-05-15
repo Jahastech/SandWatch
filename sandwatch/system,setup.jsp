@@ -93,6 +93,7 @@ void update(ConfigDao dao){
 	data.aQueryOnly = paramBoolean("aQueryOnly");
 	data.guiLang = paramString("guiLang");
 	data.guiDateFormat = paramString("guiDateFormat");
+	data.disableVersionCheck = paramBoolean("disableVersionCheck");
 
 	// Validate and update it.
 	if(checkParam(data) && dao.update(data)){
@@ -118,6 +119,7 @@ void update(ConfigDao dao){
 //-----------------------------------------------
 // Set permission for this page.
 permission.addAdmin();
+permission.addSubAdmin();
 
 //Check permission.
 if(!checkPermission()){
@@ -483,6 +485,15 @@ for(String[] arr : gGuiDateFormatList){
 }
 %>
 								</select>
+							</div>
+							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="disableVersionCheck"
+										name="disableVersionCheck" <%if(data.disableVersionCheck){out.print("checked");}%>>
+									<label class="custom-control-label" for="disableVersionCheck">
+										<%= translate("Disable Version Check")%>
+									</label>
+								</div>
 							</div>
 							<div class="form-group col-lg-8">
 								<button type="submit" class="btn btn-primary"><%= translate("SUBMIT")%></button>

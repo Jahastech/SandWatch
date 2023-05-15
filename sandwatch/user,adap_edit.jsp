@@ -2,7 +2,7 @@
 <%!
 //-----------------------------------------------
 void update(AdapDao dao){
-	LdapData data = new LdapData();
+	AdapData data = new AdapData();
 	data.id = paramInt("id");
 	data.host = paramString("host");
 	data.admin = paramString("admin");
@@ -12,6 +12,7 @@ void update(AdapDao dao){
 	data.followReferral = paramBoolean("followReferral");
 	data.period = paramInt("period");
 	data.excludeKeyword = paramString("excludeKeyword");
+	data.excludeEmptyGroup = paramBoolean("excludeEmptyGroup");
 
     data.dnsIp = paramString("dnsIp");
     data.dnsTimeout = paramInt("dnsTimeout");
@@ -19,6 +20,9 @@ void update(AdapDao dao){
 	data.useSsl = paramBoolean("useSsl");
     data.port = paramInt("port");
 	data.sslCertificateCn = paramString("sslCertificateCn");
+
+	data.userFilter = paramString("userFilter");
+	data.grpFilter = paramString("grpFilter");
 
 	// Param validation.
 	if (!isValidIp(data.host)) {
@@ -62,14 +66,16 @@ if(actionFlag.equals("update")){
 }
 
 // Global.
-LdapData data = dao.selectOne(paramInt("id"));
+AdapData data = dao.selectOne(paramInt("id"));
 
 // Active tab.
 String tabActive0 = "";
 String tabActive1 = "";
+String tabActive2 = "";
 
 String showActive0 = "";
 String showActive1 = "";
+String showActive2 = "";
 
 int tabIdx = paramInt("tabIdx");
 if(tabIdx == 0){
@@ -79,6 +85,10 @@ if(tabIdx == 0){
 else if(tabIdx == 1){
 	tabActive1 = " active";
 	showActive1 = " show active";
+}
+else if(tabIdx == 2){
+	tabActive2 = " active";
+	showActive2 = " show active";
 }
 %>
 <!-- Action info -->
@@ -105,7 +115,10 @@ else if(tabIdx == 1){
 				<a class="nav-link<%= tabActive0%>" data-toggle="tab" href="#tab0"><%= translate("EDIT")%></a>
 			</li>
 			<li class="nav-item" onclick="javascript:$('#tabIdx').val(1);">
-				<a class="nav-link<%= tabActive1%>" data-toggle="tab" href="#tab1">MS DNS</a>
+				<a class="nav-link<%= tabActive1%>" data-toggle="tab" href="#tab1"><%= translate("ADVANCED")%></a>
+			</li>
+			<li class="nav-item" onclick="javascript:$('#tabIdx').val(2);">
+				<a class="nav-link<%= tabActive2%>" data-toggle="tab" href="#tab2">MS DNS</a>
 			</li>
 		</ul>
 	</div>
@@ -141,11 +154,6 @@ else if(tabIdx == 1){
 								</div>
 							</div>
 							<div class="form-group col-lg-8">
-								<label class="col-form-label">SSL Certificate CN</label>
-								<input type="text" class="form-control" id="sslCertificateCn" name="sslCertificateCn" value="<%= data.sslCertificateCn%>">
-								<small id="input-help" class="form-text text-muted"><%= translate("When you use your own certificate for LDAPS protocol.")%></small>
-							</div>
-							<div class="form-group col-lg-8">
 								<label class="col-form-label"><%= translate("Admin")%></label>
 								<input type="text" class="form-control" id="admin" name="admin" value="<%= data.admin%>">
 							</div>
@@ -160,13 +168,6 @@ else if(tabIdx == 1){
 							<div class="form-group col-lg-8">
 								<label class="col-form-label"><%= translate("Domain")%></label>
 								<input type="text" class="form-control" id="domain" name="domain" value="<%= data.domain%>">
-							</div>
-							<div class="form-group col-lg-8">
-								<div class="custom-control custom-checkbox">
-									<input type="checkbox" class="custom-control-input" id="followReferral"
-										name="followReferral" <%if(data.followReferral){out.print("checked");}%>>
-									<label for="followReferral" class="custom-control-label">Follow Referral</label>
-								</div>
 							</div>
 							<div class="form-group col-lg-8">
 								<label class="col-form-label"><%= translate("Auto-sync")%></label>
@@ -188,6 +189,40 @@ for(Map.Entry<Integer, String> entry : periodMap.entrySet()){
 								</select>
 							</div>
 							<div class="form-group col-lg-8">
+								<button type="button" class="btn btn-primary" onclick="javascript:actionUpdate(this.form);"><%= translate("SUBMIT")%></button>
+							</div>
+						</fieldset>
+					</div>
+				</div>
+			</div>
+			<!-- /Edit -->
+
+			<!-- ADVANCED -->
+			<div class="tab-pane fade<%= showActive1%>" id="tab1">
+				<div class="card bg-light m-2 expand-lg">
+					<div class="card-body">
+						<fieldset>
+							<div class="form-group col-lg-8">
+								<label class="col-form-label">SSL Certificate CN</label>
+								<input type="text" class="form-control" id="sslCertificateCn" name="sslCertificateCn" value="<%= data.sslCertificateCn%>">
+								<small id="input-help" class="form-text text-muted"><%= translate("When you use your own certificate for LDAPS protocol.")%></small>
+							</div>
+							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="followReferral"
+										name="followReferral" <%if(data.followReferral){out.print("checked");}%>>
+									<label for="followReferral" class="custom-control-label">Follow Referral</label>
+								</div>
+							</div>
+							<div class="form-group col-lg-8">
+								<label class="col-form-label"><%= translate("User Filter")%></label>
+								<input type="text" class="form-control" id="userFilter" name="userFilter" value="<%= data.userFilter%>">
+							</div>
+							<div class="form-group col-lg-8">
+								<label class="col-form-label"><%= translate("Group Filter")%></label>
+								<input type="text" class="form-control" id="grpFilter" name="grpFilter" value="<%= data.grpFilter%>">
+							</div>
+							<div class="form-group col-lg-8">
 								<label class="col-form-label">
 									<%= translate("Exclude Keyword")%>
 									&nbsp;<i class="fa fa-question-circle south-east"
@@ -197,16 +232,23 @@ for(Map.Entry<Integer, String> entry : periodMap.entrySet()){
 								<textarea class="form-control" id="excludeKeyword" name="excludeKeyword"><%= data.excludeKeyword%></textarea>
 							</div>
 							<div class="form-group col-lg-8">
+								<div class="custom-control custom-checkbox">
+									<input type="checkbox" class="custom-control-input" id="excludeEmptyGroup"
+										name="excludeEmptyGroup" <%if(data.excludeEmptyGroup){out.print("checked");}%>>
+									<label for="excludeEmptyGroup" class="custom-control-label">Exclude Empty Group</label>
+								</div>
+							</div>
+							<div class="form-group col-lg-8">
 								<button type="button" class="btn btn-primary" onclick="javascript:actionUpdate(this.form);"><%= translate("SUBMIT")%></button>
 							</div>
 						</fieldset>
 					</div>
 				</div>
 			</div>
-			<!-- /Edit -->
+			<!-- /ADVANCED -->
 
-			<!-- Add IP -->
-			<div class="tab-pane fade<%= showActive1%>" id="tab1">
+			<!-- MS DNS -->
+			<div class="tab-pane fade<%= showActive2%>" id="tab2">
 				<div class="card bg-light m-2 expand-lg">
 					<div class="card-body">
 						<fieldset>
@@ -239,7 +281,7 @@ for(Map.Entry<Integer, String> entry : periodMap.entrySet()){
 					</div>
 				</div>
 			</div>
-			<!-- /Add IP -->
+			<!-- /MS DNS -->
 
 		</div>
 		<!-- Tab content -->

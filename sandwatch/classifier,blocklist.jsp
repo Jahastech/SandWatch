@@ -142,7 +142,7 @@ if(atd != null){
 <!-- Breadcrumb -->
 <div class="container-fluid primary" style="margin-top:-5px;">
 	<ol class="breadcrumb" style="margin-left:10px; margin-right:10px;">
-		<li class="breadcrumb-item"><%= translate("TIME")%></li>
+		<li class="breadcrumb-item"><%= translate("CLASSIFIER")%></li>
 		<li class="breadcrumb-item text-info"><%= translate("BLOCKLIST")%></li>
 	</ol>
 </div>

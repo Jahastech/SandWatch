@@ -177,7 +177,7 @@ void printParams(){
 			val = arr[0];
 		}
 
-		System.out.printf("Key = %s, Val = %s\n", key, val);
+		//System.out.printf("Key = %s, Val = %s\n", key, val);
 	}
 }
 
@@ -404,7 +404,7 @@ String getPageName(){
 	}
 	catch(Exception e){
 		//e.printStackTrace();
-		System.out.println(e);
+		//System.out.println(e);
 	}
 
 	return "";
@@ -712,6 +712,11 @@ String safeSubstring(String line, int start, int end){
 //-----------------------------------------------
 String safeSubstring(String line, int len){
 	return wLib.safeSubstring(line, len);
+}
+
+//-----------------------------------------------
+String safeSubStringWithPostfix(String line, int len, String postfix){
+	return wLib.safeSubStringWithPostfix(line, len, postfix);
 }
 
 //-----------------------------------------------

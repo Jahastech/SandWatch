@@ -3,6 +3,7 @@
 //-----------------------------------------------
 // Create data access object.
 UserLoginDao dao = new UserLoginDao(request);
+boolean failFlag = false;
 
 // Action.
 String actionFlag = paramString("actionFlag");
@@ -15,7 +16,8 @@ if(actionFlag.equals("login")){
 		return;
 	}
 	else{
-		errList.add(translate("Login failed."));
+		//errList.add(translate("Login failed."));
+		failFlag = true;
 	}
 }
 
@@ -24,8 +26,9 @@ BlockPageDao bpDao = new BlockPageDao();
 BlockPageData data = bpDao.selectOneLocal();
 String loginPage = data.loginPage;
 
-// nx_name.
+// Replace params.
 loginPage = loginPage.replaceAll("#\\{nx_name\\}", getNxName());
+loginPage = loginPage.replaceAll("#\\{fail_flag\\}", String.valueOf(failFlag));
 
 out.print(loginPage);
 %>

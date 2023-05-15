@@ -7,8 +7,8 @@ void insert(UserDao dao){
 	data.description = paramString("description");
 
 	// Param validation.
-	if(data.name.length() < 4 || !ParamTest.isValidNameLen(data.name)){
-		errList.add(translate("Name length must be between 4 and 64."));
+	if(data.name.length() < 1 || !ParamTest.isValidNameLen(data.name)){
+		errList.add(translate("Name length must be between 1 and 64."));
 		return;
 	}
 	
@@ -137,7 +137,7 @@ else if(tabIdx == 1){
 								<th>
 									<%= translate("Type")%>
 									&nbsp;<i class="fa fa-question-circle south-east"
-										title="<%= translate("I = IP, P = Password, L = LDAP, E = Expired")%>"></i>
+										title="<%= translate("I = IP, P = Password, L = Imported, E = Expired")%>"></i>
 								</th>
 								<th><%= translate("Policy")%></th>
 								<th><%= translate("IP")%></th>
@@ -230,6 +230,7 @@ $(document).ready(function(){
 	$("#list").DataTable({
 		"pageLength": 15,
 		"bLengthChange" : false,
+		"aaSorting": [[1, "asc"]],
 		"autoWidth" : false,
 		"columnDefs": [{
 			"targets": 7,

@@ -7,8 +7,8 @@ void insert(GroupDao dao){
 	data.description = paramString("description");
 
 	// Param validation.
-	if(data.name.length() < 4 || !ParamTest.isValidNameLen(data.name)){
-		errList.add(translate("Name length must be between 4 and 64."));
+	if(data.name.length() < 1 || !ParamTest.isValidNameLen(data.name)){
+		errList.add(translate("Name length must be between 1 and 64."));
 		return;
 	}
 	
@@ -135,7 +135,7 @@ else if(tabIdx == 1){
 								<th><%= translate("Name")%></th>
 								<th>LDAP</th>
 								<th><%= translate("Policy")%></th>
-								<th><%= translate("User")%></th>
+								<th><%= translate("Members")%></th>
 								<th><%= translate("Description")%></th>
 								<th></th>
 							</tr>
@@ -155,7 +155,7 @@ for(int i = 0; i < dataList.size(); i++){
 								<td><%= data.name%></td>
 								<td><%= data.getLdapYn()%></td>
 								<td><%= data.policyName%></td>
-								<td><%= safeSubstringWithTailingDots(data.getUserLine(), 50)%></td>
+								<td><%= safeSubstringWithTailingDots(data.getMemberLine(), 50)%></td>
 								<td><%= data.description%></td>
 								<td>
 									<i class="fa fa-pencil-square pointer-cursor" title="<%= translate("Edit")%>" onclick="javascript:goEdit(<%= data.id%>)"></i>&nbsp;

@@ -16,7 +16,7 @@ String getLoginPageUrl(int requestPort, String hostPort, boolean logoutFlag) thr
 		hostPort += ":" + requestPort;
 	}
 
-	return "http://" + hostPort + "/block,login.jsp";
+	return "http://" + hostPort + "/block,login.jsp" + paramStr;
 }
 %>
 <%
@@ -59,13 +59,6 @@ if(dao.isLoginRequired()){
 	String hostPort = dao.getLoginDomain();
 
 	response.sendRedirect(getLoginPageUrl(requestPort, hostPort, false));
-	return;
-}
-
-// Deal with ad-remove.
-// We can find out this one after we get the reason above.
-if(dao.isBlankBlock()){
-	out.print("");
 	return;
 }
 

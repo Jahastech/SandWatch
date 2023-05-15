@@ -17,6 +17,16 @@ boolean checkParam(DnsSetupData data){
 		return false;
 	}
 
+	if(data.httpsDnsType == 3 && isEmpty(data.httpsDnsUrl)){
+		errList.add(translate("Invalid custom DNS URL."));
+		return false;
+	}
+
+	if(isNotEmpty(data.httpsDnsUrl) && !data.httpsDnsUrl.startsWith("https://")){
+		errList.add(translate("Invalid custom DNS URL."));
+		return false;
+	}
+
 	return true;
 }
 
@@ -50,6 +60,7 @@ void update(DnsSetupDao dao){
 	// DNS Over HTTPS.
 	data.httpsDnsType = paramInt("httpsDnsType");
 	data.httpsDnsTimeout = paramInt("httpsDnsTimeout");
+	data.httpsDnsUrl = paramString("httpsDnsUrl");
 	data.failsafeWithUdp53 = paramBoolean("failsafeWithUdp53");
 	data.useHttpsDns = paramBoolean("useHttpsDns");
 
@@ -57,6 +68,34 @@ void update(DnsSetupDao dao){
 	if(checkParam(data) && dao.update(data)){
 		succList.add(translate("Update finished."));
 	}
+}
+
+//-----------------------------------------------
+void testDohServer(DnsSetupDao dao){
+	if(demoFlag){
+		errList.add("Not allowed on demo site.");
+		return;
+	}
+
+	DnsSetupData data = dao.selectOne();
+	data.httpsDnsType = paramInt("httpsDnsType");
+	data.httpsDnsUrl = paramString("httpsDnsUrl");
+
+	// Validate and update it.
+	if(data.httpsDnsType != 3){
+		return;
+	}
+
+	if(!checkParam(data) || !dao.update(data)){
+		return;
+	}
+
+	if(!dao.testDohServer(data.httpsDnsUrl)){
+		errList.add(translate("Test failed."));
+		return;
+	}
+
+	succList.add(translate("Test succeeded."));
 }
 %>
 <%
@@ -77,6 +116,9 @@ DnsSetupDao dao = new DnsSetupDao();
 String actionFlag = paramString("actionFlag");
 if(actionFlag.equals("update")){
 	update(dao);
+}
+if(actionFlag.equals("testDohServer")){
+	testDohServer(dao);
 }
 
 // Global.
@@ -318,10 +360,15 @@ String size3 = dfmt.format(data.negativeCacheSize);
 
 							<div class="form-group col-lg-8">
 								<label class="col-form-label"><%= translate("HTTPS DNS Server")%></label>
-								<select class="form-control" id="httpsDnsType" name="httpsDnsType">
+								<select class="form-control" id="httpsDnsType" name="httpsDnsType" onchange="javascript:setHttpsDnsType(this.form);">
 									<option value="1" <%if(data.httpsDnsType == 1){out.print("selected");}%>>Cloudflare</option>
 									<option value="2" <%if(data.httpsDnsType == 2){out.print("selected");}%>>Google</option>
+									<option value="3" <%if(data.httpsDnsType == 3){out.print("selected");}%>>Custom DNS URL</option>
 								</select>
+							</div>
+							<div class="form-group col-lg-8">
+								<label class="col-form-label"><%= translate("Custom DNS URL")%></label>
+								<input type="text" class="form-control" id="httpsDnsUrl" name="httpsDnsUrl" value="<%= data.httpsDnsUrl%>">
 							</div>
 							<div class="form-group col-lg-8">
 								<label class="col-form-label"><%= translate("HTTPS DNS Query Timeout")%></label>
@@ -353,6 +400,7 @@ String size3 = dfmt.format(data.negativeCacheSize);
 							</div>
 							<div class="form-group col-lg-8">
 								<button type="submit" class="btn btn-primary"><%= translate("SUBMIT")%></button>
+								<button type="button" class="btn btn-info" onclick="javascript:actionTestDohServer(this.form);"><%= translate("TEST CUSTOM DNS")%></button>
 							</div>
 						</fieldset>
 					</div>
@@ -455,4 +503,26 @@ $("#localTimeout").inputFilter(function(value){
 
 	return /^\d*$/.test(value) && parseInt(value) <= 20;
 });
+
+//-----------------------------------------------
+function setHttpsDnsType(form){
+	var val = form.httpsDnsType.value;
+
+	if(val == 3){
+		form.httpsDnsUrl.disabled = false;
+	}
+	else{
+		form.httpsDnsUrl.disabled = true;
+		form.httpsDnsUrl.value = "";
+	}
+}
+
+//-----------------------------------------------
+function actionTestDohServer(form){
+	form.action = "<%= getPageName()%>";
+	form.actionFlag.value = "testDohServer";
+	form.submit();
+}
+
+setHttpsDnsType(document.forms[0]);
 </script>

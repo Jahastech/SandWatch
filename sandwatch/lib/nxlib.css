@@ -24,7 +24,7 @@ a.mlink:hover{color: #87E3F0; text-decoration: none;}
 /* policy view */
 span.category-item{
 	display: inline-block;
-	width: 250px;
+	width: 350px;
 	margin-top: 2px;
 	margin-bottom: 2px;
 }
@@ -32,7 +32,15 @@ span.category-item{
 /* category view */
 span.domain-item{
 	display: inline-block;
-	width: 250px;
+	width: 350px;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+/* user view */
+span.user-item{
+	display: inline-block;
+	width: 350px;
 	margin-top: 2px;
 	margin-bottom: 2px;
 }

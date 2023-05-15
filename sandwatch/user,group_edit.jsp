@@ -20,6 +20,28 @@ void update(GroupDao dao){
 		succList.add(translate("Update finished."));
 	}
 }
+
+//-----------------------------------------------
+void addUser(GroupDao dao){
+	GroupData data = new GroupData();
+	data.id = paramInt("id");
+	String[] newMemberIdArr = paramArray("newMemberIdArr");
+
+	if(dao.addUser(data.id, newMemberIdArr)){
+		succList.add(translate("Update finished."));
+	}
+}
+
+//-----------------------------------------------
+void delUser(GroupDao dao){
+	GroupData data = new GroupData();
+	data.id = paramInt("id");
+	int delUserId = paramInt("delUserId");
+
+	if(dao.delUser(data.id, delUserId)){
+		succList.add(translate("Update finished."));
+	}
+}
 %>
 <%
 //-----------------------------------------------
@@ -40,12 +62,41 @@ String actionFlag = paramString("actionFlag");
 if(actionFlag.equals("update")){
 	update(dao);
 }
+if(actionFlag.equals("addUser")){
+	addUser(dao);
+}
+if(actionFlag.equals("delUser")){
+	delUser(dao);
+}
 
 // Global.
 GroupData data = dao.selectOne(paramInt("id"));
 
 // Get policy list.
 List<PolicyData> gPolicyList = new PolicyDao().selectListAll();
+
+// Active tab.
+String tabActive0 = "";
+String tabActive1 = "";
+String tabActive2 = "";
+
+String showActive0 = "";
+String showActive1 = "";
+String showActive2 = "";
+
+int tabIdx = paramInt("tabIdx");
+if(tabIdx == 0){
+	tabActive0 = " active";
+	showActive0 = " show active";
+}
+else if(tabIdx == 1){
+	tabActive1 = " active";
+	showActive1 = " show active";
+}
+else if(tabIdx == 2){
+	tabActive2 = " active";
+	showActive2 = " show active";
+}
 %>
 <!-- Action info -->
 <%@include file="include/ab-notify.jsp"%>
@@ -64,26 +115,56 @@ List<PolicyData> gPolicyList = new PolicyDao().selectListAll();
 <!-- Main content -->
 <div class="container-fluid">
 
-	<div class="card bg-light m-2 expand-lg">
-		<div class="card-body">
-			<form action="<%= getPageName()%>" method="post">
-				<input type="hidden" name="actionFlag" value="update">
-				<input type="hidden" name="id" value="<%= data.id%>">
+	<!-- Tab -->
+	<div>
+		<ul class="nav nav-tabs" style="margin-left:10px; margin-right:10px;">
+			<li class="nav-item" onclick="javascript:$('#tabIdx').val(0);">
+				<a class="nav-link<%= tabActive0%>" data-toggle="tab" href="#tab0"><%= translate("EDIT")%></a>
+			</li>
+			<li class="nav-item" onclick="javascript:$('#tabIdx').val(1);">
+				<a class="nav-link<%= tabActive1%>" data-toggle="tab" href="#tab1"><%= translate("MEMBERS")%></a>
+			</li>
+			<!-- 
+			<li class="nav-item" onclick="javascript:$('#tabIdx').val(2);">
+				<a class="nav-link<%= tabActive2%>" data-toggle="tab" href="#tab2"><%= translate("MEMBER OF")%></a>
+			</li>
+			-->
+		</ul>
+	</div>
+	<!-- Tab -->
 
-				<div class="form-group col-lg-8">
-					<label class="col-form-label"><%= translate("Name")%></label>
-					<input type="text" class="form-control" id="name" name="name" value="<%= data.name%>" disabled>
-				</div>
+	<!-- Form -->
+	<form action="<%= getPageName()%>" method="post">
+		<input type="hidden" name="actionFlag" value="update">
+		<input type="hidden" name="id" value="<%= data.id%>">
+		<input type="hidden" name="delUserId">
+		<input type="hidden" id="tabIdx" name="tabIdx" value="<%= tabIdx%>">
+		<input type="hidden" name="delGroupId">
 
-				<div class="form-group col-lg-8">
-					<label class="col-form-label"><%= translate("Description")%></label>
-					<input type="text" class="form-control" id="description"
-						name="description" value="<%= data.description%>">
-				</div>
+		<!-- Tab content -->
+		<div id="myTabContent" class="tab-content">
 
-				<div class="form-group col-lg-8">
-					<label class="col-form-label"><%= translate("Work-time Policy")%></label>
-					<select class="form-control" id="policyId" name="policyId">
+			<!-- Edit -->
+			<div class="tab-pane <%= showActive0%>" id="tab0">
+
+				<div class="card bg-light m-2 expand-lg">
+					<div class="card-body">
+						<fieldset>
+
+							<div class="form-group col-lg-8">
+								<label class="col-form-label"><%= translate("Name")%></label>
+								<input type="text" class="form-control" id="name" name="name" value="<%= data.name%>" disabled>
+							</div>
+
+							<div class="form-group col-lg-8">
+								<label class="col-form-label"><%= translate("Description")%></label>
+								<input type="text" class="form-control" id="description"
+									name="description" value="<%= data.description%>">
+							</div>
+
+							<div class="form-group col-lg-8">
+								<label class="col-form-label"><%= translate("Work-time Policy")%></label>
+								<select class="form-control" id="policyId" name="policyId">
 <%
 for(PolicyData pd : gPolicyList){
 	if(pd.id == data.policyId){
@@ -94,12 +175,12 @@ for(PolicyData pd : gPolicyList){
 	}
 }
 %>
-					</select>
-				</div>
+								</select>
+							</div>
 
-				<div class="form-group col-lg-8">
-					<label class="col-form-label"><%= translate("Free-time Policy")%></label>
-					<select class="form-control" id="ftPolicyId" name="ftPolicyId">
+							<div class="form-group col-lg-8">
+								<label class="col-form-label"><%= translate("Free-time Policy")%></label>
+								<select class="form-control" id="ftPolicyId" name="ftPolicyId">
 <%
 for(PolicyData pd : gPolicyList){
 	if(pd.id == data.ftPolicyId){
@@ -110,17 +191,17 @@ for(PolicyData pd : gPolicyList){
 	}
 }
 %>
-					</select>
-				</div>
+								</select>
+							</div>
 
-				<div class="form-group col-lg-8">
-					<label class="col-form-label"><%= translate("Group Specific Free-time")%></label>
-					<div class="form-row" style="margin-left: 2px;">
+							<div class="form-group col-lg-8">
+								<label class="col-form-label"><%= translate("Group Specific Free-time")%></label>
+								<div class="form-row" style="margin-left: 2px;">
 <%
 List<String> hhList = getHhList();
 List<String> mmList = getMmList();
 %>
-						<select class="form-control col-lg-1 col-md-1" id="stimeHh" name="stimeHh">
+									<select class="form-control col-lg-1 col-md-1" id="stimeHh" name="stimeHh">
 <%
 for(String hh : hhList){
 	if(data.ftStime.startsWith(hh)){
@@ -131,9 +212,9 @@ for(String hh : hhList){
 	}
 }
 %>
-						</select>&nbsp;
+									</select>&nbsp;
 
-						<select class="form-control col-lg-1 col-md-1" id="stimeMm" name="stimeMm">
+									<select class="form-control col-lg-1 col-md-1" id="stimeMm" name="stimeMm">
 <%
 for(String mm : mmList){
 	if(data.ftStime.endsWith(mm)){
@@ -144,9 +225,9 @@ for(String mm : mmList){
 	}
 }
 %>
-						</select>&nbsp;~&nbsp;
+									</select>&nbsp;~&nbsp;
 
-						<select class="form-control col-lg-1 col-md-1" id="etimeHh" name="etimeHh">
+									<select class="form-control col-lg-1 col-md-1" id="etimeHh" name="etimeHh">
 <%
 for(String hh : hhList){
 	if(data.ftEtime.startsWith(hh)){
@@ -157,9 +238,9 @@ for(String hh : hhList){
 	}
 }
 %>
-						</select>&nbsp;
+									</select>&nbsp;
 
-						<select class="form-control col-lg-1 col-md-1" id="etimeMm" name="etimeMm">
+									<select class="form-control col-lg-1 col-md-1" id="etimeMm" name="etimeMm">
 <%
 for(String mm : mmList){
 	if(data.ftEtime.endsWith(mm)){
@@ -170,19 +251,97 @@ for(String mm : mmList){
 	}
 }
 %>
-						</select>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group col-lg-8">
+								<button type="submit" class="btn btn-primary"><%= translate("SUBMIT")%></button>
+							</div>
+
+						</fieldset>
 					</div>
 				</div>
+			</div>
+			<!-- /Edit -->
 
-				<div class="form-group col-lg-8">
-					<button type="submit" class="btn btn-primary"><%= translate("SUBMIT")%></button>
+			<!-- MEMBERS -->
+			<div class="tab-pane fade<%= showActive1%>" id="tab1">
+				<div class="card bg-light m-2 expand-lg">
+					<div class="card-body">
+						<fieldset>
+
+							<div class="form-group col-lg-8">
+								<label class="col-form-label"><%= translate("Users Available")%></label>
+
+								<select class="form-control" id="newMemberIdArr" name="newMemberIdArr" multiple
+									<%if(data.ldapId > 0){out.print("disabled");}%>>
+
+<%
+List<UserData> availUsers = dao.getAvailUsers(data.id);
+for(UserData ou : availUsers){
+	printf("<option value='%s'>%s</option>\n", ou.id, ou.name);
+}
+%>
+								</select>
+								<button type="button" class="btn btn-primary btn-sm" style="margin-top: 3px;"
+									onclick="javascript:actionAddUser(this.form)"><%= translate("ADD USER")%></button>
+							</div>
+
+							<div class="form-group col-lg-12">
+<%
+for(int i = 0; i < data.userList.size(); i++){
+	UserData ud = data.userList.get(i);
+
+	printf("<span class='user-item'><a class='xlink' href='javascript:actionDelUser(%s)'>[x]</a> %s</span>", ud.id, ud.name);
+}
+for(int i = 0; i < data.groupList.size(); i++){
+	GroupData gd = data.groupList.get(i);
+
+	printf("<span class='user-item'><a class='xlink' href='#'>[x]</a> *%s</span>", gd.name);
+}
+%>
+							</div>
+
+						</fieldset>
+					</div>
 				</div>
+			</div>
+			<!-- /MEMBERS -->
 
-			</form>
 		</div>
-	</div>
+		<!-- Tab content -->
+
+	</form>
+	<!-- /Form -->
 
 </div>
 <!-- /Main content -->
 
 <%@include file="include/footer.jsp"%>
+
+<script>
+//-----------------------------------------------
+function actionAddUser(form){
+<%if(data.ldapId > 0){
+	out.print("return;");
+}
+%>
+
+	form.actionFlag.value = "addUser";
+	form.submit();
+}
+
+//-----------------------------------------------
+function actionDelUser(userId){
+<%if(data.ldapId > 0){
+	out.print("return;");
+}
+%>
+
+	form = document.forms[0];
+	form.actionFlag.value = "delUser";
+	form.delUserId.value = userId;
+	form.submit();
+}
+</script>

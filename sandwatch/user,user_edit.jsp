@@ -5,7 +5,7 @@ boolean checkParam(UserData data){
 	// Check password only if there's a password updated.
 	if (!isEmpty(data.passwd) && !isSha1Hex(data.passwd)) {
 		if (data.passwd.length() < 4 || !ParamTest.isValidPasswdLen(data.passwd)) {
-			errList.add(translate("Password length must be between 1 and 128."));
+			errList.add(translate("Password length must be between 4 and 128."));
 			return false;
 		}
 
@@ -35,12 +35,13 @@ void update(UserDao dao){
 	data.token = paramString("token");
 	data.description = paramString("description");
 
-	// Only for manually created users.
-	data.grpId = paramInt("grpId");
-
 	// Validate and update it.
 	if(checkParam(data) && dao.update(data)){
 		succList.add(translate("Update finished."));
+
+		if(isNotEmpty(data.passwd) && !new ConfigDao().selectOne().enableLogin){
+			warnList.add(translate("User authentication needs to be enabled."));
+		}
 	}
 }
 
@@ -88,6 +89,28 @@ void deleteIp(UserDao dao){
 		succList.add(translate("Update finished."));
 	}
 }
+
+//-----------------------------------------------
+void joinGroup(UserDao dao){
+	UserData data = new UserData();
+	data.id = paramInt("id");
+	String[] newGroupIdLineArr = paramArray("newGroupIdLineArr");
+
+	if(dao.joinGroup(data.id, newGroupIdLineArr)){
+		succList.add(translate("Update finished."));
+	}
+}
+
+//-----------------------------------------------
+void withdrawGroup(UserDao dao){
+	GroupData data = new GroupData();
+	data.id = paramInt("id");
+	int withdrawGroupId = paramInt("withdrawGroupId");
+
+	if(dao.withdrawGroup(data.id, withdrawGroupId)){
+		succList.add(translate("Update finished."));
+	}
+}
 %>
 <%
 //-----------------------------------------------
@@ -129,6 +152,12 @@ if(actionFlag.equals("mobileConfig")){
 		errList.add(translate("Couldn't write the file."));
 	}
 }
+if(actionFlag.equals("joinGroup")){
+	joinGroup(dao);
+}
+if(actionFlag.equals("withdrawGroup")){
+	withdrawGroup(dao);
+}
 
 // Global.
 UserData data = dao.selectOne(paramInt("id"));
@@ -140,9 +169,11 @@ List<GroupData> gGroupList = new GroupDao().selectListUserCreatedOnly();
 // Active tab.
 String tabActive0 = "";
 String tabActive1 = "";
+String tabActive2 = "";
 
 String showActive0 = "";
 String showActive1 = "";
+String showActive2 = "";
 
 int tabIdx = paramInt("tabIdx");
 if(tabIdx == 0){
@@ -152,6 +183,10 @@ if(tabIdx == 0){
 else if(tabIdx == 1){
 	tabActive1 = " active";
 	showActive1 = " show active";
+}
+else if(tabIdx == 2){
+	tabActive2 = " active";
+	showActive2 = " show active";
 }
 %>
 <!-- Action info -->
@@ -180,6 +215,9 @@ else if(tabIdx == 1){
 			<li class="nav-item" onclick="javascript:$('#tabIdx').val(1);">
 				<a class="nav-link<%= tabActive1%>" data-toggle="tab" href="#tab1"><%= translate("ADD IP")%></a>
 			</li>
+			<li class="nav-item" onclick="javascript:$('#tabIdx').val(2);">
+				<a class="nav-link<%= tabActive2%>" data-toggle="tab" href="#tab2"><%= translate("MEMBER OF")%></a>
+			</li>
 		</ul>
 	</div>
 	<!-- Tab -->
@@ -190,7 +228,8 @@ else if(tabIdx == 1){
 		<input type="hidden" name="id" value="<%= data.id%>">
 		<input type="hidden" name="ipId" value="">
 		<input type="hidden" id="tabIdx" name="tabIdx" value="<%= tabIdx%>">
- 
+		<input type="hidden" name="withdrawGroupId">
+
 		<!-- Tab content -->
 		<div id="myTabContent" class="tab-content">
 
@@ -259,34 +298,13 @@ for(PolicyData pd : gPolicyList){
 								</label>
 								<input type="text" class="form-control" id="token" name="token" value="<%= data.token%>">
 							</div>
-							<div class="form-group col-lg-8">
-								<label class="col-form-label"><%= translate("Group, Member of")%></label>
-<%
-if(data.ldapId > 0){
-	out.println("<input type='text' class='form-control' id='loginToken' name='loginToken' disabled value='");
-	out.println(data.getGroupLine());
-	out.println("'>");
-}
-else{
-	out.println("<select class='form-control' id='grpId' name='grpId'>");
-	out.println("<option value='0'>anon-grp");
-	for(GroupData grp : gGroupList){
-		if(grp.name.startsWith(data.getGroupLine())){
-			printf("<option value='%s' selected>%s</option>\n", grp.id, grp.name);
-		}
-		else{
-			printf("<option value='%s'>%s</option>\n", grp.id, grp.name);
-		}
-	}
-	out.println("</select>");
-}
-%>
-							</div>
+
 							<div class="form-group col-lg-8">
 								<button type="button" class="btn btn-primary" onclick="javascript:actionUpdate(this.form);"><%= translate("SUBMIT")%></button>
 								<button type="button" class="btn btn-info" onclick="javascript:actionNewToken(this.form)"><%= translate("NEW LOGIN TOKEN")%></button>
 								<button type="button" class="btn btn-warning" onclick="javascript:actionMobileConfig(this.form)"><%= translate("DOWNLOAD MOBILE CONFIG FILE")%></button>
 							</div>
+
 						</fieldset>
 					</div>
 				</div>
@@ -338,6 +356,42 @@ for(int i = 0; i < data.ipList.size(); i++){
 				</div>
 			</div>
 			<!-- /Add IP -->
+
+			<!-- MEMBER OF -->
+			<div class="tab-pane fade<%= showActive2%>" id="tab2">
+				<div class="card bg-light m-2 expand-lg">
+					<div class="card-body">
+						<fieldset>
+
+				<div class="form-group col-lg-8">
+					<label class="col-form-label"><%= translate("Groups Available")%></label>
+					<select class="form-control" id="newGroupIdLineArr" name="newGroupIdLineArr" multiple <%if(data.ldapId > 0){out.print("disabled");};%>>
+<%
+List<GroupData> availGroups = dao.getAvailGroups(data.id);
+for(GroupData ou : availGroups){
+	printf("<option value='%s'>%s</option>\n", ou.id, ou.name);
+}
+%>
+					</select>
+					<button type="button" class="btn btn-primary btn-sm" style="margin-top: 3px;"
+						onclick="javascript:actionJoinGroup(this.form)"><%= translate("ADD GROUP")%></button>
+				</div>
+
+				<div class="form-group col-lg-12">
+<%
+for(int i = 0; i < data.groupList.size(); i++){
+	GroupData gd = data.groupList.get(i);
+
+	printf("<span class='domain-item'><a class='xlink' href='javascript:actionWithdrawGroup(%s)'>[x]</a> %s</span>", gd.id, gd.name);
+}
+%>
+				</div>
+
+						</fieldset>
+					</div>
+				</div>
+			</div>
+			<!-- /MEMBER OF -->
 
 		</div>
 		<!-- Tab content -->
@@ -429,6 +483,30 @@ function actionDeleteIp(ipId){
 //-----------------------------------------------
 function actionMobileConfig(form){
 	form.actionFlag.value = "mobileConfig";
+	form.submit();
+}
+
+//-----------------------------------------------
+function actionJoinGroup(form){
+<%if(data.ldapId > 0){
+	out.print("return;");
+}
+%>
+
+	form.actionFlag.value = "joinGroup";
+	form.submit();
+}
+
+//-----------------------------------------------
+function actionWithdrawGroup(withdrawGroupId){
+<%if(data.ldapId > 0){
+	out.print("return;");
+}
+%>
+
+	form = document.forms[0];
+	form.actionFlag.value = "withdrawGroup";
+	form.withdrawGroupId.value = withdrawGroupId;
 	form.submit();
 }
 </script>

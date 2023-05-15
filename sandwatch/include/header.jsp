@@ -20,14 +20,14 @@ response.setHeader("Cache-Control","no-cache");
 <link rel="stylesheet" href="lib/dataTables.1.10.20.css">
 <link rel="stylesheet" href="lib/jquery.powertip.min.css">
 <link rel="stylesheet" href="lib/xdpick/jquery.datetimepicker.css"/>
-<link rel="stylesheet" href="lib/nxlib.css">
+<link rel="stylesheet" href="lib/nxlib.css?v=2">
 <title><%= getNxName()%> v<%= getNxVersion()%></title>
 </head>
 
 <body>
 	<div class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary">
 		<div class="container-fluid">
-			<a href="dashboard.jsp" class="navbar-brand"><img id="logo" class="d-inline-block mr-1" alt="Logo" src="img/logo.png"></a>
+			<a href="dashboard.jsp" class="navbar-brand"><img id="logo" class="d-inline-block mr-1" alt="Logo" src="img/logo.png?v=3"></a>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
 				aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
@@ -60,6 +60,7 @@ response.setHeader("Cache-Control","no-cache");
 							<a class="dropdown-item" href="dns,zone_file.jsp"><%= translate("ZONE FILE")%></a>
 							<a class="dropdown-item" href="dns,zone_transfer.jsp"><%= translate("ZONE TRANSFER")%></a>
 							<a class="dropdown-item" href="dns,redirection.jsp"><%= translate("REDIRECTION")%></a>
+							<a class="dropdown-item" href="dns,conditional_forwarder.jsp"><%= translate("CONDITIONAL FORWARDER")%></a>
 						</div>
 					</li>
 					<li class="nav-item dropdown">

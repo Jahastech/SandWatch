@@ -108,7 +108,7 @@ UserTestData data = dao.test(paramString("name"));
 					<div class="form-group col-lg-8" style="margin-top: 10px;">
 						<button type="button" class="btn btn-info" onclick="javascript:actionQuotaResetUser(this.form);"><%= translate("RESET SCREEN TIME")%></button>
 						<button type="button" class="btn btn-warning" onclick="javascript:actionBandwidthResetUser(this.form);"><%= translate("RESET DATA CAP")%></button>
-						<button type="button" class="btn btn-danger" onclick="javascript:actionLoginSessionResetUser(this.form);"><%= translate("RESET LOGIN SESSION")%></button>
+						<button type="button" class="btn btn-danger" onclick="javascript:actionLoginSessionResetUser(this.form);"><%= translate("DELETE LOGIN SESSION")%></button>
 					</div>
 				</fieldset>
 			</form>
@@ -143,7 +143,7 @@ function actionBandwidthResetUser(form){
 
 //-----------------------------------------------
 function actionLoginSessionResetUser(form){
-	if(!confirm('<%= translate("Reset login session TTL.")%>')){
+	if(!confirm('<%= translate("Delete login session.")%>')){
 		return;
 	}
 
